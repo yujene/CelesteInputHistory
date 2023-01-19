@@ -45,7 +45,7 @@ namespace Celeste.Mod.InputHistory
         {
             if (orig is ButtonInputEvent origEvent)
             {
-                return !Pressed && Check == origEvent.Check && !tas;
+                return !Pressed && Check == origEvent.Check;
             }
             return false;
         }
