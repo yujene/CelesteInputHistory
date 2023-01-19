@@ -13,31 +13,20 @@ namespace Celeste.Mod.InputHistory
     public class ButtonInputEvent : InputEvent
     {
         public int Check { get; }
-        public bool MenuCheck { get; } = false;
         public bool Pressed { get; }
         private readonly VirtualButton _button;
         private readonly List<int> _checkedBindingIds;
+        private InputStates _inputStates;
         public Microsoft.Xna.Framework.Input.Keys Key { get; }
 
-        public ButtonInputEvent(VirtualButton button, Microsoft.Xna.Framework.Input.Keys key)
+        public ButtonInputEvent(VirtualButton button, Microsoft.Xna.Framework.Input.Keys key, InputStates inputStates)
         {
             _button = button;
             Key = key;
+            _inputStates = inputStates;
             _checkedBindingIds = CheckCount(button);
             Check = _checkedBindingIds.Count();
             Pressed = button.Binding.Pressed(button.GamepadIndex, button.Threshold);
-
-            if (Engine.Scene is Level level)
-            {
-                // The frame you hit a button to close the pause menu, level.Pause becomes false,
-                // so check wasPaused instead, as that stays true for one extra frame.
-                if (level.Paused || DynamicData.For(level).Get<bool>("wasPaused"))
-                {
-                    // Various menu button hacks
-                    if (button == Input.Jump) MenuCheck = Input.MenuConfirm.Check;
-                    if (button == Input.Dash) MenuCheck = Input.MenuCancel.Check;
-                }
-            }
         }
 
         public float Render(float x, float y, float fontSize)
@@ -56,7 +45,7 @@ namespace Celeste.Mod.InputHistory
         {
             if (orig is ButtonInputEvent origEvent)
             {
-                return !Pressed && Check == origEvent.Check && (!tas || MenuCheck == origEvent.MenuCheck);
+                return !Pressed && Check == origEvent.Check && !tas;
             }
             return false;
         }
@@ -73,6 +62,7 @@ namespace Celeste.Mod.InputHistory
             else if (_button == Input.Pause) ret += "Pause";
             else if (_button == Input.QuickRestart) ret += "QuickRestart";
             else if (_button == Input.MenuJournal) ret += "Journal";
+            else if (_button == Input.MenuConfirm) ret += "Confirm";
             else ret += "Unknown";
             ret += " " + Check.ToString();
             if (Pressed) ret += "P";
@@ -81,29 +71,21 @@ namespace Celeste.Mod.InputHistory
 
         public string ToTasString()
         {
-            if (Check == 0 && !MenuCheck) return "";
+            if (Check == 0) return "";
 
             var ret = "";
             if (_button == Input.Jump)
             {
-                bool addJ = false;
-                bool addK = false;
-                foreach (var bindingIdx in _checkedBindingIds)
-                {
-                    if (bindingIdx % 2 == 0) addJ = true;
-                    else addK = true;
-                }
-                if (addJ) ret += "J,";
-                if (addK) ret += "K,";
-                if (MenuCheck) ret += "O,";
-                ret = ret.Trim(',');
+                if (_inputStates.Jump == 1) ret += "J";
+                else if (_inputStates.Jump == 2) ret += "K";
             }
-            else if (_button == Input.Dash) ret += "X";
+            else if (_button == Input.Dash) ret += "C";
             else if (_button == Input.CrouchDash) ret += "Z";
             else if (_button == Input.Grab) ret += "G";
             else if (_button == Input.Pause) ret += "S";
             else if (_button == Input.QuickRestart) ret += "Q";
             else if (_button == Input.MenuJournal) ret += "N";
+            else if (_button == Input.MenuConfirm) ret += "O";
             return ret;
         }
 

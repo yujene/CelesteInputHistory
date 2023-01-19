@@ -25,30 +25,31 @@ namespace Celeste.Mod.InputHistory
             _events = events;
         }
 
-        public static HistoryEvent CreateDefaultHistoryEvent()
+        public static HistoryEvent CreateDefaultHistoryEvent(InputStates inputStates)
         {
-            return new HistoryEvent(DefaultEventList());
+            return new HistoryEvent(DefaultEventList(inputStates));
         }
 
-        public static HistoryEvent CreateTasHistoryEvent()
+        public static HistoryEvent CreateTasHistoryEvent(InputStates inputStates)
         {
-            var events = DefaultEventList();
-            events.Add(new ButtonInputEvent(Input.Pause, Microsoft.Xna.Framework.Input.Keys.S));
-            events.Add(new ButtonInputEvent(Input.QuickRestart, Microsoft.Xna.Framework.Input.Keys.R));
-            events.Add(new ButtonInputEvent(Input.MenuJournal, Microsoft.Xna.Framework.Input.Keys.N));
+            var events = DefaultEventList(inputStates);
+            events.Add(new ButtonInputEvent(Input.Pause, Microsoft.Xna.Framework.Input.Keys.S, inputStates));
+            events.Add(new ButtonInputEvent(Input.QuickRestart, Microsoft.Xna.Framework.Input.Keys.R, inputStates));
+            events.Add(new ButtonInputEvent(Input.MenuJournal, Microsoft.Xna.Framework.Input.Keys.N, inputStates));
+            events.Add(new ButtonInputEvent(Input.MenuConfirm, Microsoft.Xna.Framework.Input.Keys.O, inputStates));
             return new HistoryEvent(events);
         }
 
-        private static List<InputEvent> DefaultEventList()
+        private static List<InputEvent> DefaultEventList(InputStates inputStates)
         {
             var events = new List<InputEvent>();
             events.Add(new IntegerAxisInputEvent(Input.MoveX, Input.MoveY));
-            events.Add(new ButtonInputEvent(Input.Jump, Microsoft.Xna.Framework.Input.Keys.J));
+            events.Add(new ButtonInputEvent(Input.Jump, Microsoft.Xna.Framework.Input.Keys.J, inputStates));
             events.Add(new MultiButtonInputEvent(new[] {
-                new ButtonInputEvent(Input.Dash, Microsoft.Xna.Framework.Input.Keys.X),
-                new ButtonInputEvent(Input.CrouchDash, Microsoft.Xna.Framework.Input.Keys.Z),
+                new ButtonInputEvent(Input.Dash, Microsoft.Xna.Framework.Input.Keys.X, inputStates),
+                new ButtonInputEvent(Input.CrouchDash, Microsoft.Xna.Framework.Input.Keys.Z, inputStates),
             }));
-            events.Add(new ButtonInputEvent(Input.Grab, Microsoft.Xna.Framework.Input.Keys.G));
+            events.Add(new ButtonInputEvent(Input.Grab, Microsoft.Xna.Framework.Input.Keys.G, inputStates));
             return events;
         }
 

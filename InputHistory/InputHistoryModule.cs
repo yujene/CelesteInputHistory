@@ -24,6 +24,8 @@ namespace Celeste.Mod.InputHistory
         private HistoryEvent _lastReplayEvent;
         private bool _onEnter = false;
 
+        private InputStates _inputStates = new InputStates(0);
+
         public InputHistoryModule()
         {
             Instance = this;
@@ -99,7 +101,18 @@ namespace Celeste.Mod.InputHistory
 
             if (_onEnter) return;
 
-            HistoryEvent e = HistoryEvent.CreateDefaultHistoryEvent();
+            // Handle jump state changes once per update
+            if (Settings.EnableReplays)
+            {
+                if (!Input.Jump.Check) _inputStates.Jump = 0;
+                else if (Input.Jump.Pressed)
+                {
+                    if (_inputStates.Jump == 1) _inputStates.Jump = 2;
+                    else _inputStates.Jump = 1;
+                }
+            }
+
+            HistoryEvent e = HistoryEvent.CreateDefaultHistoryEvent(_inputStates);
             if (Events.Count == 0 || !e.Extends(Events.Last(), tas: false))
             {
                 EnqueueEvent(e);
@@ -112,7 +125,7 @@ namespace Celeste.Mod.InputHistory
 
             if (Settings.EnableReplays)
             {
-                HistoryEvent tasEvent = HistoryEvent.CreateTasHistoryEvent();
+                HistoryEvent tasEvent = HistoryEvent.CreateTasHistoryEvent(_inputStates);
                 if (tasEvent.Extends(_lastReplayEvent, tas: true))
                 {
                     _lastReplayEvent.Time += e.Time;
