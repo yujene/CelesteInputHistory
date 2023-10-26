@@ -24,7 +24,7 @@ namespace Celeste.Mod.InputHistory
         private HistoryEvent _lastReplayEvent;
         private bool _onEnter = false;
 
-        private InputStates _inputStates = new InputStates(0);
+        private InputStates _inputStates = new InputStates(0, 0, 0);
 
         public InputHistoryModule()
         {
@@ -105,10 +105,24 @@ namespace Celeste.Mod.InputHistory
             if (Settings.EnableReplays)
             {
                 if (!Input.Jump.Check) _inputStates.Jump = 0;
-                else if (Input.Jump.Pressed)
+                else if (Input.Jump.Binding.Pressed(Input.Jump.GamepadIndex, Input.Jump.Threshold))
                 {
                     if (_inputStates.Jump == 1) _inputStates.Jump = 2;
                     else _inputStates.Jump = 1;
+                }
+
+                if (!Input.Dash.Check) _inputStates.Dash = 0;
+                else if (Input.Dash.Binding.Pressed(Input.Dash.GamepadIndex, Input.Dash.Threshold))
+                {
+                    if (_inputStates.Dash == 1) _inputStates.Dash = 2;
+                    else _inputStates.Dash = 1;
+                }
+
+                if (!Input.CrouchDash.Check) _inputStates.Demo = 0;
+                else if (Input.CrouchDash.Binding.Pressed(Input.CrouchDash.GamepadIndex, Input.CrouchDash.Threshold))
+                {
+                    if (_inputStates.Demo == 1) _inputStates.Demo = 2;
+                    else _inputStates.Demo = 1;
                 }
             }
 

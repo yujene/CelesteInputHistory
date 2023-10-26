@@ -79,8 +79,16 @@ namespace Celeste.Mod.InputHistory
                 if (_inputStates.Jump == 1) ret += "J";
                 else if (_inputStates.Jump == 2) ret += "K";
             }
-            else if (_button == Input.Dash) ret += "C";
-            else if (_button == Input.CrouchDash) ret += "Z";
+            else if (_button == Input.Dash)
+            {
+                if (_inputStates.Dash == 1) ret += "C";
+                else if (_inputStates.Dash == 2) ret += "X";
+            }
+            else if (_button == Input.CrouchDash)
+            {
+                if (_inputStates.Demo == 1) ret += "Z";
+                else if (_inputStates.Demo == 2) ret += "V";
+            }
             else if (_button == Input.Grab) ret += "G";
             else if (_button == Input.Pause) ret += "S";
             else if (_button == Input.QuickRestart) ret += "Q";

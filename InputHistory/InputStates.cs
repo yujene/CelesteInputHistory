@@ -10,10 +10,14 @@ namespace Celeste.Mod.InputHistory
     public struct InputStates
     {
         public int Jump;
+        public int Dash;
+        public int Demo;
 
-        public InputStates(int jump)
+        public InputStates(int jump, int dash, int demo)
         {
             Jump = jump;
+            Dash = dash;
+            Demo = demo;
         }
     }
 }
