@@ -43,7 +43,7 @@ namespace Celeste.Mod.InputHistory
         private static List<InputEvent> DefaultEventList(InputStates inputStates)
         {
             var events = new List<InputEvent>();
-            events.Add(new IntegerAxisInputEvent(Input.MoveX, Input.MoveY));
+            events.Add(new IntegerAxisInputEvent(Input.MoveX, Input.MoveY, Input.Aim, Input.Feather));
             events.Add(new ButtonInputEvent(Input.Jump, Microsoft.Xna.Framework.Input.Keys.J, inputStates));
             events.Add(new MultiButtonInputEvent(new[] {
                 new ButtonInputEvent(Input.Dash, Microsoft.Xna.Framework.Input.Keys.X, inputStates),
